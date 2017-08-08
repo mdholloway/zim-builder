@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+../kiwix-tools/tools/scripts/listCategoryEntries.pl --host=en.wikipedia.org --category="WikiProject_Women's_health_articles" --category="WikiProject_Microbiology_articles" --category="WikiProject_Physiology_articles" --category="WikiProject_Medicine_articles" --category="WikiProject_Dentistry_articles" --category="WikiProject_Anatomy_articles" --category="WikiProject_Pharmacology_articles" --category="WikiProject_Sanitation_articles" --path=w --exploration=5 --namespace=1 | sed 's/Talk://' | sort -u > med_en.list

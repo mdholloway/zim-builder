@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ZIM_LANG=""
+ZIM_TYPE=""
+ZIM_FORMAT=""
+ZIM_NOVID=""
+ZIM_NOPIC=""
+ZIM_LABEL=""
+ZIM_DESC=""
+ZIM_WHAT=""
+
+while test $# -gt 0
+do
+    case ${1} in
+        --nopic) ZIM_NOPIC=true
+            ;;
+        --novid) ZIM_NOVID=true
+            ;;
+        --lang*) ZIM_LANG=`echo $1 | sed -e 's/^.*=//g'`
+            ;;
+        --type*)
+            ZIM_TYPE=`echo $1 | sed -e 's/^.*=//g'`
+            case ${ZIM_TYPE} in
+                5k) 
+                  ZIM_DESC="Top-Viewed 5000"
+                  ZIM_WHAT="popular articles"
+                  ;;
+                50k) 
+                  ZIM_DESC="Top-Viewed 50000"
+                  ZIM_WHAT="popular articles"
+                  ;;
+                med) 
+                  ZIM_DESC="Medicine"
+                  ZIM_WHAT="articles on medical topics"
+                  ;;
+                core) 
+                  ZIM_DESC="Core"
+                  ZIM_WHAT="important articles"
+                  ;;
+                smalltest) 
+                  ZIM_DESC="TEST"
+                  ZIM_WHAT="testing articles"
+                  ;;
+                *)
+                  printf "Invalid type. Enter one of: 5k, 50k, med, core\n" >&2
+                  exit 2
+            esac
+            ;;
+    esac
+    shift
+done
+
+if [[ -z ${ZIM_LANG} ]]; then
+    printf "Language code required.\n\nExample:  $ ./build_zim --lang=en\n\n" >&2
+    exit 2
+fi
+
+if [[ -z ${ZIM_TYPE} ]]; then
+    printf "Please specify a --type: 5k, 50k, med, core\n" >&2
+    exit 2
+fi
+
+if [[ ! -z ${ZIM_NOVID} ]] || [[ ! -z ${ZIM_NOPIC} ]]; then
+    ZIM_FORMAT="novid"
+fi
+
+if [[ ! -z ${ZIM_NOPIC} ]]; then
+    ZIM_FORMAT="${ZIM_FORMAT},nopic"
+fi
+
+ZIM_LABEL=${ZIM_LANG}
+
+if [[ ! -z ${ZIM_FORMAT} ]]; then
+    ZIM_LABEL="${ZIM_LABEL},${ZIM_FORMAT}"
+fi
+
+ZIM_COMMAND="mwoffliner --mwUrl=https://${ZIM_LANG}.wikipedia.org/ --adminEmail=reading-wmf@wikimedia.org --articleList=${ZIM_TYPE}_${ZIM_LANG}.list --customZimTitle=\"Wikipedia ${ZIM_DESC} [${ZIM_LABEL}] [BETA]\" --customZimDescription=\"A collection of ${ZIM_WHAT} from Wikipedia\" --publisher=\"Wikimedia Apps\" --withZimFullTextIndex --mobileLayout --verbose"
+
+if [[ ! -z ${ZIM_FORMAT} ]]; then
+    ZIM_COMMAND="${ZIM_COMMAND} --format=${ZIM_FORMAT}"
+fi
+
+cd ${ZIM_TYPE} && ${ZIM_COMMAND}

@@ -1,0 +1,3 @@
+[submodule "kiwix-tools"]
+	path = kiwix-tools
+	url = https://github.com/kiwix/tools
