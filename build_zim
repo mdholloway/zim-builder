@@ -75,7 +75,7 @@ if [[ ! -z ${ZIM_FORMAT} ]]; then
     ZIM_LABEL="${ZIM_LABEL},${ZIM_FORMAT}"
 fi
 
-ZIM_COMMAND="mwoffliner --mwUrl=https://${ZIM_LANG}.wikipedia.org/ --adminEmail=reading-wmf@wikimedia.org --articleList=${ZIM_TYPE}_${ZIM_LANG}.list --customZimTitle=\"Wikipedia ${ZIM_DESC} [${ZIM_LABEL}] [BETA]\" --customZimDescription=\"A collection of ${ZIM_WHAT} from Wikipedia\" --publisher=\"Wikimedia Apps\" --withZimFullTextIndex --mobileLayout --verbose"
+ZIM_COMMAND="mwoffliner --mwUrl=https://${ZIM_LANG}.wikipedia.org/ --articleList=${ZIM_TYPE}_${ZIM_LANG}.list --customZimTitle=\"Wikipedia ${ZIM_DESC} [${ZIM_LABEL}] [BETA]\" --customZimDescription=\"A collection of ${ZIM_WHAT} from Wikipedia\" --withZimFullTextIndex --mobileLayout --verbose"
 
 if [[ ! -z ${ZIM_FORMAT} ]]; then
     ZIM_COMMAND="${ZIM_COMMAND} --format=${ZIM_FORMAT}"
