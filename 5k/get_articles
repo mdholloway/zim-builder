@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+PAGECOUNT_LANG=""
+PAGECOUNT_DATE=""
+
+while test $# -gt 0
+do
+    case ${1} in
+        --date*) PAGECOUNT_DATE=`echo $1 | sed -e 's/^.*=//g'`
+            ;;
+        --lang*) PAGECOUNT_LANG=`echo $1 | sed -e 's/^.*=//g'`
+            ;;
+    esac
+    shift
+done
+
+if [[ -z ${PAGECOUNT_DATE} ]]; then
+  echo "Please provide a date argument, e.g.: --date=2017-07"
+  exit 2
+fi
+
+if [[ -z ${PAGECOUNT_LANG} ]]; then
+  echo "Please provide a language argument, e.g.: --lang=en"
+  exit 2
+fi
+
+if [[ ! -f pagecounts-${PAGECOUNT_DATE}-views-ge-5-totals ]]; then
+    wget https://dumps.wikimedia.org/other/pagecounts-ez/merged/pagecounts-${PAGECOUNT_DATE}-views-ge-5-totals.bz2
+    bzip2 -d pagecounts-${PAGECOUNT_DATE}-views-ge-5-totals.bz2
+fi
+
+grep -E "^${PAGECOUNT_LANG}\.[mz] |^${PAGECOUNT_LANG}\.zero " pagecounts-${PAGECOUNT_DATE}-views-ge-5-totals | awk '{arr[$2]+=$3} END {for (i in arr) {print i,arr[i]}}' | sort -t " " -nrk2 | grep -vE "^- |^[Ss]pecial:|^[Ss]pecial%3[Aa]" > pagecounts-${PAGECOUNT_DATE}-${PAGECOUNT_LANG}wiki-sorted
+
+head -5000 pagecounts-${PAGECOUNT_DATE}-${PAGECOUNT_LANG}wiki-sorted | cut -d " " -f1 > 5k_${PAGECOUNT_LANG}_${PAGECOUNT_DATE}.list
