@@ -22,8 +22,7 @@ name. The script will not run before performing this step.
 --nopic [optional]: omits pictures in addition to audio and video, resulting in an even smaller ZIM file
 ```
 
-Example usage: `$ ./build_zim --lang=en --type=core --nopic --novid`
+Example usage: `$ ./build_zim --lang=en --type=core --novid`
 
-The requested ZIM compilation will be created in the `/out` subdirectory of the file type subdirectory
-(e.g., in `core/out/` given the above example).
+The requested ZIM compilation will be created in the `out/` directory; some cached data will be in `cac/`.
 
