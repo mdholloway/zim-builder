@@ -1,5 +1,5 @@
 config
-*/pagecounts*
-*/cac/
-*/out/
-*/tmp/
+lists/pagecounts*
+cac/
+out/
+tmp/
