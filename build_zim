@@ -5,6 +5,7 @@ source config
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+ZIM_DATE=""
 ZIM_LANG=""
 ZIM_TYPE=""
 ZIM_FORMAT=""
@@ -17,11 +18,17 @@ ZIM_WHAT=""
 while test $# -gt 0
 do
     case ${1} in
-        --nopic) ZIM_NOPIC=true
+        --nopic)
+            ZIM_NOPIC=true
             ;;
-        --novid) ZIM_NOVID=true
+        --novid)
+            ZIM_NOVID=true
             ;;
-        --lang*) ZIM_LANG=`echo $1 | sed -e 's/^.*=//g'`
+        --lang*)
+            ZIM_LANG=`echo $1 | sed -e 's/^.*=//g'`
+            ;;
+        --date*)
+            ZIM_DATE=`echo $1 | sed -e 's/^.*=//g'`
             ;;
         --type*)
             ZIM_TYPE=`echo $1 | sed -e 's/^.*=//g'`
@@ -79,7 +86,17 @@ if [[ ! -z ${ZIM_FORMAT} ]]; then
     ZIM_LABEL="${ZIM_LABEL},${ZIM_FORMAT}"
 fi
 
-ZIM_COMMAND="mwoffliner --mwUrl=https://${ZIM_LANG}.wikipedia.org/ --adminEmail=${ADMIN_EMAIL} --articleList=lists/${ZIM_TYPE}_${ZIM_LANG}.list --customZimTitle=\"Wikipedia ${ZIM_DESC} [${ZIM_LABEL}] [BETA]\" --customZimDescription=\"A collection of ${ZIM_WHAT} from Wikipedia\" --publisher=${PUBLISHER} --withZimFullTextIndex --mobileLayout --verbose"
+ZIM_LIST="${ZIM_TYPE}_${ZIM_LANG}"
+
+if [[ ${ZIM_TYPE} =~ ^(5k|50k)$ ]]; then
+    if [[ -z ${ZIM_DATE} ]]; then
+        printf "Date (YYYY-MM) required when requesting a top-viewed collection.\n\nExample:  $ ./build_zim --lang=en --type=5k --date=2017-07\n\n" >&2
+        exit 2
+    fi
+    ZIM_LIST="${ZIM_LIST}_${ZIM_DATE}"
+fi
+
+ZIM_COMMAND="mwoffliner --mwUrl=https://${ZIM_LANG}.wikipedia.org/ --adminEmail=${ADMIN_EMAIL} --articleList=lists/${ZIM_LIST}.list --customZimTitle=\"Wikipedia ${ZIM_DESC} [${ZIM_LABEL}] [BETA]\" --customZimDescription=\"A collection of ${ZIM_WHAT} from Wikipedia\" --publisher=${PUBLISHER} --withZimFullTextIndex --mobileLayout --verbose"
 
 if [[ ! -z ${ZIM_FORMAT} ]]; then
     ZIM_COMMAND="${ZIM_COMMAND} --format=${ZIM_FORMAT}"
