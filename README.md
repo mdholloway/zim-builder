@@ -27,14 +27,16 @@ Example usage: `$ ./build_zim --lang=en --type=core --novid`
 
 The requested ZIM compilation will be created in the `out/` directory; some cached data will be in `cac/`.
 
-## Update lists
+## Update article lists
 
-If you want to refresh any list or generate new top-viewed lists for a new language or month/year, run the corresponding scripts in `scripts/`:
+If you want to refresh any list or generate new top-viewed article lists for a new language or month/year, run the corresponding scripts in `scripts/`:
 
 ```
 $ ./scripts/get_articles_med
 $ ./scripts/get_articles_top_viewed --lang=en --date=2017-05
 ```
+
+`get_articles_top_viewed` will generate both top 5k and top 50k variants for the language and date specified.
 
 If you want to run `get_articles_med`, you will need likely need some dependencies:
 
