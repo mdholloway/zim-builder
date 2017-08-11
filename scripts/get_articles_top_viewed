@@ -35,3 +35,5 @@ fi
 grep -E "^${PAGECOUNT_LANG}\.[mz] |^${PAGECOUNT_LANG}\.zero " pagecounts-${PAGECOUNT_DATE}-views-ge-5-totals | awk '{arr[$2]+=$3} END {for (i in arr) {print i,arr[i]}}' | sort -t " " -nrk2 | grep -vE "^- |^[Ss]pecial:|^[Ss]pecial%3[Aa]" > pagecounts-${PAGECOUNT_DATE}-${PAGECOUNT_LANG}wiki-sorted
 
 head -50000 pagecounts-${PAGECOUNT_DATE}-${PAGECOUNT_LANG}wiki-sorted | cut -d " " -f1 > 50k_${PAGECOUNT_LANG}_${PAGECOUNT_DATE}.list
+
+head -5000 50k_${PAGECOUNT_LANG}_${PAGECOUNT_DATE}.list > 5k_${PAGECOUNT_LANG}_${PAGECOUNT_DATE}.list
